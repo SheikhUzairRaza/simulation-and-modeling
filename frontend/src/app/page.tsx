@@ -8,6 +8,7 @@ import ModelSelector from "@/components/ModelSelector";
 import InputForm from "@/components/InputForm";
 import ResultsPanel, { SimulationResults } from "@/components/ResultsPanel";
 import ThemeToggle from "@/components/ThemeToggle";
+import BankSimulationPanel from "@/components/BankSimulationPanel";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"models" | "simulator">("models");
@@ -221,12 +222,12 @@ export default function Home() {
                   <span className="status-live blink-soft" /> Session active
                 </p>
                 <h1 className="title-main truncate text-2xl sm:text-3xl">
-                  {activeTab === "models" ? "Queueing Command Center" : "Scenario Engine"}
+                  {activeTab === "models" ? "Queueing Command Center" : "Bank Branch Simulator"}
                 </h1>
                 <p className="muted mt-1 text-sm sm:text-base">
                   {activeTab === "models"
                     ? "Build an input profile and compute queue metrics instantly."
-                    : "Advanced simulation scenes are currently under construction."}
+                    : "Run a realistic teller-floor replica using branch traffic and staffing patterns."}
                 </p>
               </div>
             </div>
@@ -279,13 +280,7 @@ export default function Home() {
               </section>
             </div>
           ) : (
-            <div className="shell-card rise-in p-8 sm:p-12">
-              <p className="kicker text-[var(--accent-alt)]">Coming Soon</p>
-              <h2 className="title-main mt-3 text-3xl">Scenario Simulator</h2>
-              <p className="muted mt-3 max-w-prose text-sm sm:text-base">
-                The simulator surface is being rebuilt with timeline controls, configurable distributions, and multi-run comparison tools.
-              </p>
-            </div>
+            <BankSimulationPanel />
           )}
         </main>
       </div>

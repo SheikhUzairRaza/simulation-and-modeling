@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Orbit, FlaskConical } from "lucide-react";
+import { BarChart3, Building2, FlaskConical } from "lucide-react";
 
 interface SidebarProps {
   activeTab: "models" | "simulator";
@@ -12,7 +12,7 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: SidebarProps) {
   const menuItems = [
     { id: "models" as const, label: "Queue Models", caption: "Analytical formulas", icon: BarChart3 },
-    // { id: "simulator" as const, label: "Scenario Sim", caption: "Event flow experiments", icon: Orbit },
+    { id: "simulator" as const, label: "Bank Simulation", caption: "Bank environment flow", icon: Building2 },
   ];
 
   return (
