@@ -1,0 +1,307 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #fff7ec;
+  --bg-deep: #ffe8cf;
+  --panel: #fffefb;
+  --ink: #161b2b;
+  --muted: #5a647f;
+  --line: #1b2746;
+  --accent: #2563eb;
+  --accent-alt: #f97316;
+  --success: #0f766e;
+  --danger: #be123c;
+  --shadow-offset: 7px 7px 0 #1b2746;
+}
+
+.dark {
+  --bg: #0b1220;
+  --bg-deep: #101a2f;
+  --panel: #131f38;
+  --ink: #ecf2ff;
+  --muted: #a5b5d4;
+  --line: #d7e2ff;
+  --accent: #60a5fa;
+  --accent-alt: #fb923c;
+  --success: #2dd4bf;
+  --danger: #fb7185;
+  --shadow-offset: 7px 7px 0 #d7e2ff;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-sora);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-sora), "Segoe UI", sans-serif;
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px) 0 0 / 34px 34px,
+    linear-gradient(rgba(249, 115, 22, 0.05) 1px, transparent 1px) 0 0 / 34px 34px,
+    radial-gradient(circle at 8% 14%, #fff9f1, transparent 40%),
+    radial-gradient(circle at 92% 8%, #e9f1ff, transparent 32%),
+    linear-gradient(150deg, var(--bg) 0%, var(--bg-deep) 100%);
+}
+
+.dark body {
+  background:
+    linear-gradient(90deg, rgba(96, 165, 250, 0.08) 1px, transparent 1px) 0 0 / 34px 34px,
+    linear-gradient(rgba(251, 146, 60, 0.08) 1px, transparent 1px) 0 0 / 34px 34px,
+    radial-gradient(circle at 10% 16%, rgba(96, 165, 250, 0.16), transparent 38%),
+    radial-gradient(circle at 92% 12%, rgba(251, 146, 60, 0.17), transparent 30%),
+    linear-gradient(150deg, var(--bg) 0%, var(--bg-deep) 100%);
+}
+
+.root-stage {
+  min-height: 100vh;
+}
+
+.shell-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-offset);
+}
+
+.title-main {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.label-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  padding: 0.34rem 0.75rem;
+  font-size: 0.72rem;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.nav-btn {
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  padding: 0.75rem;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.nav-btn:hover {
+  transform: translate(-2px, -2px);
+}
+
+.nav-btn-active {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(249, 115, 22, 0.18));
+}
+
+.control,
+.control-select {
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0.75rem 0.85rem;
+  font-size: 0.95rem;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.control::placeholder {
+  color: color-mix(in srgb, var(--muted) 75%, #fff 25%);
+}
+
+.control:focus,
+.control-select:focus {
+  outline: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.control:disabled,
+.control-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-main {
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 0.84rem 1rem;
+  font-weight: 700;
+  color: #f8fbff;
+  background: linear-gradient(125deg, #2563eb, #3b82f6 52%, #f97316);
+  box-shadow: 5px 5px 0 var(--line);
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+}
+
+.btn-main:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--line);
+}
+
+.btn-main:active {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.btn-main:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0.56rem;
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.metric-tile {
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: 0.95rem;
+  transition: transform 160ms ease;
+}
+
+.metric-tile:hover {
+  transform: translateY(-2px);
+}
+
+.metric-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.result-stat {
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--panel) 87%, transparent);
+  padding: 0.7rem 0.75rem;
+}
+
+.result-badge {
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.result-badge-good {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 14%, var(--panel) 86%);
+}
+
+.result-badge-bad {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 14%, var(--panel) 86%);
+}
+
+.meter {
+  width: 100%;
+  height: 0.6rem;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  overflow: hidden;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+}
+
+.kicker {
+  font-family: var(--font-jetbrains-mono), monospace;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.status-live {
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 999px;
+  background: var(--success);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--success) 24%, transparent);
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blinkSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.rise-in {
+  animation: riseIn 420ms ease both;
+}
+
+.blink-soft {
+  animation: blinkSoft 2.8s ease-in-out infinite;
+}
+
+.sim-toast {
+  border: 2px solid var(--line) !important;
+  border-radius: 16px !important;
+  background: color-mix(in srgb, var(--panel) 92%, transparent) !important;
+  color: var(--ink) !important;
+  box-shadow: 6px 6px 0 var(--line) !important;
+  font-weight: 700 !important;
+  min-width: 320px;
+  padding: 0.9rem 1rem !important;
+  backdrop-filter: blur(8px);
+}
+
+.sim-toast-success {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--success) 28%, transparent), transparent 44%),
+    color-mix(in srgb, var(--panel) 94%, transparent) !important;
+}
