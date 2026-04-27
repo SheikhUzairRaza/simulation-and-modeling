@@ -1,5 +1,5 @@
 "use client";
-
+import MM1Simulator from "@/components/MM1Simulator";
 import { useState, FormEvent } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { CheckCircle2, Menu, X, WandSparkles } from "lucide-react";
@@ -279,8 +279,20 @@ export default function Home() {
                 )}
               </section>
             </div>
-          ) : (
-            <BankSimulationPanel />
+       ) : (
+            <div className="space-y-10">
+              {/* This shows your bank branch simulation */}
+              <BankSimulationPanel />
+              
+              {/* This adds the new MM1 ATM Simulator & Gantt Chart below it */}
+              <div className="border-t border-[var(--line)] pt-10">
+                <div className="px-4 mb-6">
+                  <h2 className="title-main text-3xl">ATM Discrete Simulator</h2>
+                  <p className="muted mt-2">M/M/1 simulation trace with visual Gantt chart tracking.</p>
+                </div>
+                <MM1Simulator />
+              </div>
+            </div>
           )}
         </main>
       </div>
