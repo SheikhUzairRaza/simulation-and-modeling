@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
-import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const sora = Sora({
-  variable: "--font-sora",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
 export const metadata: Metadata = {
-  title: "Queueing Command Center",
-  description: "Modern queue modeling workspace with simulation analytics",
+  title: "Signal Room",
+  description: "Reworked queue modeling interface with a cleaner control surface",
 };
 
 export default function RootLayout({
@@ -38,11 +25,19 @@ export default function RootLayout({
                   document.documentElement.classList.add('dark');
                 }
               })();
+
+              document.addEventListener('wheel', function() {
+                if (document.activeElement && document.activeElement.type === 'number') {
+                  document.activeElement.blur();
+                }
+              });
             `,
           }}
         />
       </head>
-      <body className={`${sora.variable} ${jetBrainsMono.variable} antialiased`}>{children}</body>
+      <body className="font-sans antialiased bg-slate-50 dark:bg-slate-950">
+        {children}
+      </body>
     </html>
   );
 }

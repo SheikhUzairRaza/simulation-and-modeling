@@ -10,16 +10,10 @@ public class MGSService
         double serviceTimeStandardDeviation,
         int numberOfServers)
     {
-        if (serviceTimeStandardDeviation < 0)
-            throw new ArgumentException("Service Time Standard Deviation cannot be negative");
-
-        double cs = serviceTimeStandardDeviation / meanServiceTime;
-        double variabilityMultiplier = (1.0 + (cs * cs)) / 2.0;
-        MM1Response baseResponse = QueueingMath.CalculateMMs(
+        return QueueingMath.CalculateMGS(
             meanInterarrivalTime,
             meanServiceTime,
+            serviceTimeStandardDeviation,
             numberOfServers);
-
-        return QueueingMath.ApplyVariabilityMultiplier(baseResponse, variabilityMultiplier);
     }
 }

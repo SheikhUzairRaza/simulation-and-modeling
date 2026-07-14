@@ -10,11 +10,10 @@ public class GG1Service
         double interarrivalTimeStandardDeviation,
         double serviceTimeStandardDeviation)
     {
-        return new GGSService().Calculate(
+        return QueueingMath.CalculateGG1(
             meanInterarrivalTime,
             meanServiceTime,
             interarrivalTimeStandardDeviation,
-            serviceTimeStandardDeviation,
-            1);
+            serviceTimeStandardDeviation);
     }
 }

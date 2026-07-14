@@ -17,7 +17,7 @@ The project is a web-based analytical and simulation system used to:
 
 - evaluate queueing models
 - compare queue performance across different model types
-- simulate a bank branch operating environment
+- analyze a bank branch operating environment
 
 The system contains two major functional domains:
 

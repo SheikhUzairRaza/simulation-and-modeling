@@ -1,7 +1,5 @@
 "use client";
 
-import { CheckCircle2, Server } from "lucide-react";
-
 interface ModelSelectorProps {
   selectedModel: string;
   onModelChange: (model: string) => void;
@@ -15,64 +13,67 @@ export default function ModelSelector({
   numberOfServers,
   onServersChange,
 }: ModelSelectorProps) {
-  const models = [
-    { id: "M/M/1", headline: "Classical single-server Markov queue", available: true },
-    { id: "M/G/1", headline: "Poisson arrivals with general service", available: true },
-    { id: "G/G/1", headline: "General arrival and service process", available: true },
-    { id: "M/M/s", headline: "Multi-server exponential queue system", available: true },
-    { id: "M/G/s", headline: "Poisson arrivals with general service and many servers", available: true },
-    { id: "G/G/s", headline: "General arrival and service process with many servers", available: true },
-  ];
+  const models = ['M/M/1', 'M/G/1', 'G/G/1', 'M/M/s'];
 
   return (
-    <section className="shell-card rise-in p-5 sm:p-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <h2 className="title-main text-xl sm:text-2xl">Choose Model Family</h2>
-        <span className="label-chip">Model library</span>
-      </div>
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
+        Model Family
+      </h2>
 
-      <div className="grid grid-cols-1 gap-3">
-        {models.map((model) => {
-          const active = selectedModel === model.id;
-
-          return (
-            <button
-              key={model.id}
-              type="button"
-              onClick={() => model.available && onModelChange(model.id)}
-              disabled={!model.available}
-              className={`nav-btn text-left ${active ? "nav-btn-active" : ""} ${
-                model.available ? "" : "cursor-not-allowed opacity-60"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="kicker text-[var(--accent)]">{model.id}</p>
-                  <p className="mt-1 text-sm font-medium">{model.headline}</p>
-                </div>
-                {active && <CheckCircle2 className="h-4 w-4 text-[var(--success)]" />}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {(selectedModel === "M/M/s" || selectedModel === "M/G/s" || selectedModel === "G/G/s") && (
-        <div className="mt-4 shell-card p-4">
-          <label htmlFor="servers-input" className="mb-2 flex items-center gap-2 text-sm font-medium">
-            <Server className="h-4 w-4 text-[var(--accent-alt)]" /> Number of servers (s)
+      {/* Model Dropdown */}
+      <div className="space-y-4">
+        <div>
+          <label
+            htmlFor="model-select"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
+            Select model
           </label>
-          <input
-            id="servers-input"
-            type="number"
-            min="1"
-            value={numberOfServers}
-            onChange={(e) => onServersChange(parseInt(e.target.value, 10) || 1)}
-            className="control"
-            placeholder="Enter server count"
-          />
+          <select
+            id="model-select"
+            value={selectedModel}
+            onChange={(e) => onModelChange(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 
+                     bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                     transition-all duration-200 cursor-pointer
+                     hover:border-gray-400 dark:hover:border-gray-600"
+          >
+            <option value="" disabled>Choose a model...</option>
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
-    </section>
+
+        {/* Additional Input for M/M/s */}
+        {selectedModel === 'M/M/s' && (
+          <div className="animate-fadeIn">
+            <label
+              htmlFor="servers-input"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Number of servers (s)
+            </label>
+            <input
+              id="servers-input"
+              type="number"
+              min="1"
+              value={numberOfServers}
+              onChange={(e) => onServersChange(parseInt(e.target.value) || 1)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 
+                       bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       transition-all duration-200
+                       hover:border-gray-400 dark:hover:border-gray-600"
+              placeholder="Enter number of servers"
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

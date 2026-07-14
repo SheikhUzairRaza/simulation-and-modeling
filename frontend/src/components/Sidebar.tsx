@@ -1,69 +1,94 @@
 "use client";
 
-import { BarChart3, Building2, FlaskConical } from "lucide-react";
+import { BarChart3, LayoutGrid } from "lucide-react";
+
+export type AppTab = "models" | "simulator";
 
 interface SidebarProps {
-  activeTab: "models" | "simulator";
-  onTabChange: (tab: "models" | "simulator") => void;
+  activeTab: AppTab;
+  onTabChange: (tab: AppTab) => void;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: SidebarProps) {
   const menuItems = [
-    { id: "models" as const, label: "Queue Models", caption: "Analytical formulas", icon: BarChart3 },
-    { id: "simulator" as const, label: "Bank Simulation", caption: "Bank environment flow", icon: Building2 },
+    { id: "models" as const, label: "Queueing Models", icon: BarChart3 },
+    { id: "simulator" as const, label: "Simulator", icon: LayoutGrid },
   ];
 
   return (
     <>
-      {isOpen && <div className="fixed inset-0 z-40 bg-black/55 lg:hidden" onClick={onClose} />}
-
-      <aside
-        className={`fixed left-4 top-4 z-50 h-[calc(100vh-2rem)] w-[19rem] transition-transform duration-300 lg:left-6 lg:top-6 lg:h-[calc(100vh-3rem)] ${
-          isOpen ? "translate-x-0" : "-translate-x-[125%]"
-        } lg:translate-x-0`}
-      >
-        <div className="shell-card flex h-full flex-col p-4">
-          <div>
-            <p className="kicker text-[var(--accent)]">Queue OS</p>
-            <h2 className="title-main mt-2 text-2xl">Control Deck</h2>
-            <p className="muted mt-2 text-sm">Switch between mathematical models and simulator workflows.</p>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
+          onClick={onClose}
+        />
+      )}
+      
+      <aside className={`
+        fixed left-0 top-0 h-screen w-72 bg-white dark:bg-slate-900 
+        border-r border-slate-200 dark:border-slate-800 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)] flex flex-col z-50
+        transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0
+      `}>
+        {/* App Title & Logo */}
+        <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-500 overflow-hidden flex items-center justify-center shadow-lg shadow-brand-500/20">
+              <BarChart3 className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400 dark:from-brand-400 dark:to-brand-200 tracking-tight">
+                Queue Lab
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">QUEUE WORKSPACE</p>
+            </div>
           </div>
+        </div>
 
-          <nav className="mt-6 space-y-3">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
+        {/* Navigation Menu */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            
+            return (
+               <button
+                key={item.id}
+                onClick={() => {
+                  onTabChange(item.id);
+                  onClose();
+                }}
+                className={`
+                  w-full flex items-center gap-3 px-4 py-3.5 rounded-xl
+                  transition-all duration-300 font-semibold text-sm group relative overflow-hidden
+                  ${
+                    isActive
+                      ? 'text-brand-700 dark:text-brand-300 shadow-sm bg-brand-50 dark:bg-brand-500/10'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
+                  }
+                `}
+              >
+                {isActive && (
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-500 rounded-r-full" />
+                )}
+                <Icon className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    onTabChange(item.id);
-                    onClose();
-                  }}
-                  className={`nav-btn ${isActive ? "nav-btn-active" : ""}`}
-                >
-                  <div className="flex items-center gap-3 text-left">
-                    <span className="rounded-xl border-2 border-[var(--line)] bg-[var(--panel)] p-2">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span>
-                      <span className="block text-sm font-semibold">{item.label}</span>
-                      <span className="muted block text-xs">{item.caption}</span>
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </nav>
-
-          <div className="mt-auto shell-card p-3">
-            <p className="kicker text-[var(--muted)]">Toolkit</p>
-            <p className="mt-2 flex items-center gap-2 text-sm font-medium">
-              <FlaskConical className="h-4 w-4 text-[var(--accent-alt)]" /> Version 3 interface
+        {/* Footer */}
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Queueing models only
             </p>
+            <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div>
           </div>
         </div>
       </aside>

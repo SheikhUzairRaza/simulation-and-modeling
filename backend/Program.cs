@@ -9,11 +9,7 @@ builder.Services.AddSwaggerGen();
 
 // Register application services
 builder.Services.AddScoped<MM1Service>();
-builder.Services.AddScoped<MG1Service>();
-builder.Services.AddScoped<GG1Service>();
-builder.Services.AddScoped<MMSService>();
-builder.Services.AddScoped<MGSService>();
-builder.Services.AddScoped<GGSService>();
+builder.Services.AddScoped<QueueModelService>();
 
 // Add CORS for development
 builder.Services.AddCors(options =>
@@ -38,7 +34,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 // Root endpoint
-app.MapGet("/", () => Results.Json(new { message = "Queue Simulator API Running" }));
+app.MapGet("/", () => Results.Json(new { message = "Queueing Model API Running" }));
 
 app.MapControllers();
 

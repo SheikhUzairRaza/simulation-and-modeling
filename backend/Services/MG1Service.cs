@@ -9,10 +9,9 @@ public class MG1Service
         double meanServiceTime,
         double serviceTimeStandardDeviation)
     {
-        return new MGSService().Calculate(
+        return QueueingMath.CalculateMG1(
             meanInterarrivalTime,
             meanServiceTime,
-            serviceTimeStandardDeviation,
-            1);
+            serviceTimeStandardDeviation);
     }
 }

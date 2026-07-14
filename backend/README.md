@@ -1,4 +1,4 @@
-# Queue Simulator Backend
+# Queueing Model Backend
 
 This backend exposes an ASP.NET Core API for calculating M/M/1 queueing model metrics.
 

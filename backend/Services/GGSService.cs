@@ -11,20 +11,11 @@ public class GGSService
         double serviceTimeStandardDeviation,
         int numberOfServers)
     {
-        if (interarrivalTimeStandardDeviation < 0)
-            throw new ArgumentException("Interarrival Time Standard Deviation cannot be negative");
-
-        if (serviceTimeStandardDeviation < 0)
-            throw new ArgumentException("Service Time Standard Deviation cannot be negative");
-
-        double ca = interarrivalTimeStandardDeviation / meanInterarrivalTime;
-        double cs = serviceTimeStandardDeviation / meanServiceTime;
-        double variabilityMultiplier = ((ca * ca) + (cs * cs)) / 2.0;
-        MM1Response baseResponse = QueueingMath.CalculateMMs(
+        return QueueingMath.CalculateGGS(
             meanInterarrivalTime,
             meanServiceTime,
+            interarrivalTimeStandardDeviation,
+            serviceTimeStandardDeviation,
             numberOfServers);
-
-        return QueueingMath.ApplyVariabilityMultiplier(baseResponse, variabilityMultiplier);
     }
 }
