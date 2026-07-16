@@ -7,7 +7,7 @@ Accept: application/json
 ###
 
 ### Test M/M/1 Calculation - Valid System (ρ < 1)
-POST {{QueueSimulatorAPI_HostAddress}}/api/simulation/mm1
+POST {{QueueSimulatorAPI_HostAddress}}/api/queue/mm1
 Content-Type: application/json
 
 {
@@ -18,7 +18,7 @@ Content-Type: application/json
 ###
 
 ### Test M/M/1 Calculation - Unstable System (ρ >= 1)
-POST {{QueueSimulatorAPI_HostAddress}}/api/simulation/mm1
+POST {{QueueSimulatorAPI_HostAddress}}/api/queue/mm1
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Content-Type: application/json
 ###
 
 ### Test M/M/1 Calculation - Invalid Input (negative value)
-POST {{QueueSimulatorAPI_HostAddress}}/api/simulation/mm1
+POST {{QueueSimulatorAPI_HostAddress}}/api/queue/mm1
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 ###
 
 ### Test M/M/1 Calculation - Example 2
-POST {{QueueSimulatorAPI_HostAddress}}/api/simulation/mm1
+POST {{QueueSimulatorAPI_HostAddress}}/api/queue/mm1
 Content-Type: application/json
 
 {

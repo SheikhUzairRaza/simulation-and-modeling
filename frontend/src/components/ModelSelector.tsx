@@ -18,7 +18,7 @@ export default function ModelSelector({
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
-        Model Family
+        Model Selection
       </h2>
 
       {/* Model Dropdown */}
@@ -28,7 +28,7 @@ export default function ModelSelector({
             htmlFor="model-select"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
-            Select model
+            Select Queueing Model
           </label>
           <select
             id="model-select"

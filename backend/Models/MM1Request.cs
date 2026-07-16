@@ -4,11 +4,9 @@ namespace QueueSimulatorAPI.Models;
 
 public class MM1Request
 {
-    [Required]
-    [Range(0.0001, double.MaxValue, ErrorMessage = "Mean Interarrival Time must be greater than 0")]
+    [Range(0.0000001, double.MaxValue, ErrorMessage = "Mean inter-arrival time must be greater than 0")]
     public double MeanInterarrivalTime { get; set; }
 
-    [Required]
-    [Range(0.0001, double.MaxValue, ErrorMessage = "Mean Service Time must be greater than 0")]
+    [Range(0.0000001, double.MaxValue, ErrorMessage = "Mean service time must be greater than 0")]
     public double MeanServiceTime { get; set; }
 }

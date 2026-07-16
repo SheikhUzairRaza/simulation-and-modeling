@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 // Root endpoint
-app.MapGet("/", () => Results.Json(new { message = "Queueing Model API Running" }));
+app.MapGet("/", () => Results.Json(new { message = "Queueing Models API is live" }));
 
 app.MapControllers();
 

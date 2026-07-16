@@ -1,8 +1,8 @@
 "use client";
 
-import { BarChart3, LayoutGrid } from "lucide-react";
+import { Workflow } from 'lucide-react';
 
-export type AppTab = "models" | "simulator";
+export type AppTab = 'models';
 
 interface SidebarProps {
   activeTab: AppTab;
@@ -13,8 +13,7 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: SidebarProps) {
   const menuItems = [
-    { id: "models" as const, label: "Queueing Models", icon: BarChart3 },
-    { id: "simulator" as const, label: "Simulator", icon: LayoutGrid },
+    { id: 'models' as const, label: 'Queueing Models', icon: Workflow },
   ];
 
   return (
@@ -35,17 +34,10 @@ export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: Sid
         lg:translate-x-0
       `}>
         {/* App Title & Logo */}
-        <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-500 overflow-hidden flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <BarChart3 className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400 dark:from-brand-400 dark:to-brand-200 tracking-tight">
-                Queue Lab
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">QUEUE WORKSPACE</p>
-            </div>
+        <div className="p-6 border-b border-white/10">
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <p className="text-sm font-semibold text-white">Queueing Models</p>
+            <p className="text-[11px] text-slate-400">Analysis workspace</p>
           </div>
         </div>
 
@@ -67,13 +59,13 @@ export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: Sid
                   transition-all duration-300 font-semibold text-sm group relative overflow-hidden
                   ${
                     isActive
-                      ? 'text-brand-700 dark:text-brand-300 shadow-sm bg-brand-50 dark:bg-brand-500/10'
+                  ? 'text-cyan-700 dark:text-cyan-300 shadow-sm bg-cyan-50 dark:bg-cyan-500/10'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
                   }
                 `}
               >
                 {isActive && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-500 rounded-r-full" />
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-500 rounded-r-full" />
                 )}
                 <Icon className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
                 <span>{item.label}</span>
@@ -83,12 +75,9 @@ export default function Sidebar({ activeTab, onTabChange, isOpen, onClose }: Sid
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Queueing models only
-            </p>
-            <div className="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></div>
+        <div className="p-4 border-t border-white/10">
+          <div className="h-1.5 w-full rounded-full bg-white/5">
+            <div className="h-1.5 w-16 rounded-full bg-cyan-400/80" />
           </div>
         </div>
       </aside>

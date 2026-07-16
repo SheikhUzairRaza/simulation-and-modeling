@@ -118,15 +118,16 @@ public class QueueModelService
 
         var (caSquared, csSquared) = ResolveSquaredCVs(lambda, mu, ca, cs, arrivalVariance, serviceVariance, "G/G/1");
 
-        var denominator = 2 * (1 - rho) * (1 + Math.Pow(rho, 2) * csSquared);
+        // Kingman's approximation for G/G/1.
+        var variabilityFactor = (caSquared + csSquared) / 2.0;
+        var denominator = 1 - rho;
         if (denominator <= 0)
         {
             throw new InvalidOperationException("Invalid denominator while computing G/G/1 metrics.");
         }
 
-        var lq =
-            (Math.Pow(rho, 2) * (caSquared + csSquared) * (caSquared + Math.Pow(rho, 2) * csSquared)) /
-            denominator;
+        var wq = (rho / denominator) * variabilityFactor * (1.0 / mu);
+        var lq = lambda * wq;
 
         if (double.IsNaN(lq) || double.IsInfinity(lq))
         {
@@ -134,8 +135,7 @@ public class QueueModelService
         }
 
         lq = Math.Max(0, lq);
-
-        var wq = Math.Max(0, lq / lambda);
+        wq = Math.Max(0, wq);
         var w = wq + (1.0 / mu);
         var l = lambda * w;
 
@@ -208,26 +208,7 @@ public class QueueModelService
 
     private static string ResolveModel(QueueSimulationRequest request)
     {
-        if (!request.AutoDetectModel)
-        {
-            return NormalizeModel(request.Model ?? string.Empty, request.Servers);
-        }
-
-        var arrivalClass = MapDistributionToKendallSymbol(request.ArrivalDistribution);
-        var serviceClass = MapDistributionToKendallSymbol(request.ServiceDistribution);
-        var servers = request.Servers;
-
-        if (servers <= 0)
-        {
-            throw new ArgumentException("Servers must be at least 1.");
-        }
-
-        if (servers > 1)
-        {
-            return $"{arrivalClass}/{serviceClass}/S";
-        }
-
-        return $"{arrivalClass}/{serviceClass}/1";
+        return NormalizeModel(request.Model ?? string.Empty, request.Servers);
     }
 
     private static string NormalizeModel(string model, int servers)

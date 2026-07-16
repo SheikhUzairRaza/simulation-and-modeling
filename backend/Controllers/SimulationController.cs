@@ -6,11 +6,11 @@ namespace QueueSimulatorAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SimulationController : ControllerBase
+public class QueueController : ControllerBase
 {
     private readonly QueueModelService _queueModelService;
 
-    public SimulationController(QueueModelService queueModelService)
+    public QueueController(QueueModelService queueModelService)
     {
         _queueModelService = queueModelService;
     }
@@ -50,8 +50,8 @@ public class SimulationController : ControllerBase
     }
 
     /// <summary>
-    /// Backward-compatible endpoint for M/M/1 payload used by existing clients
-    /// </summary>
+     /// Backward-compatible endpoint for M/M/1 payload used by existing clients
+     /// </summary>
     [HttpPost("mm1")]
     [ProducesResponseType(typeof(QueueSimulationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,7 +65,6 @@ public class SimulationController : ControllerBase
         var genericRequest = new QueueSimulationRequest
         {
             Model = "M/M/1",
-            AutoDetectModel = false,
             MeanInterArrivalTime = request.MeanInterarrivalTime,
             ServiceTime = request.MeanServiceTime,
             Servers = 1

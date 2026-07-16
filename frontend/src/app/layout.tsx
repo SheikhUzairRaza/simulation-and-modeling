@@ -1,9 +1,25 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+});
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Signal Room",
-  description: "Reworked queue modeling interface with a cleaner control surface",
+  title: "Queuing Model",
+  description: "Professional queueing model simulation and analysis tool",
 };
 
 export default function RootLayout({
@@ -35,7 +51,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased bg-slate-50 dark:bg-slate-950">
+      <body
+        className={`${outfit.variable} ${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-slate-50 dark:bg-slate-950`}
+      >
         {children}
       </body>
     </html>

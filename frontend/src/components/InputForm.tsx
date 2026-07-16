@@ -1,15 +1,15 @@
-"use client";
+﻿"use client";
 
-import type { ReactNode, FormEvent } from "react";
-import { Loader2, Play, Sparkles } from "lucide-react";
+import { Loader2, Play, SlidersHorizontal } from 'lucide-react';
+import { FormEvent } from 'react';
 
-type TimeUnit = "seconds" | "minutes" | "hours";
+type TimeUnit = 'seconds' | 'minutes' | 'hours';
 
 interface InputFormProps {
-  mode: "manual" | "auto";
-  onModeChange: (mode: "manual" | "auto") => void;
-  manualServerMode: "single" | "multi";
-  onManualServerModeChange: (value: "single" | "multi") => void;
+  mode: 'manual' | 'auto';
+  onModeChange: (mode: 'manual' | 'auto') => void;
+  manualServerMode: 'single' | 'multi';
+  onManualServerModeChange: (value: 'single' | 'multi') => void;
   selectedModel: string;
   onSelectedModelChange: (model: string) => void;
   arrivalProcessType: "arrival" | "interArrival";
@@ -20,14 +20,14 @@ interface InputFormProps {
   onServiceDistributionChange: (value: string) => void;
   servers: number;
   onServersChange: (value: number) => void;
-  arrivalInputType: "rate" | "meanInterArrival";
-  onArrivalInputTypeChange: (value: "rate" | "meanInterArrival") => void;
+  arrivalInputType: 'rate' | 'meanInterArrival';
+  onArrivalInputTypeChange: (value: 'rate' | 'meanInterArrival') => void;
   arrivalTimeUnit: TimeUnit;
   onArrivalTimeUnitChange: (value: TimeUnit) => void;
   arrivalValue: string;
   onArrivalValueChange: (value: string) => void;
-  serviceInputType: "rate" | "mean";
-  onServiceInputTypeChange: (value: "rate" | "mean") => void;
+  serviceInputType: 'rate' | 'mean';
+  onServiceInputTypeChange: (value: 'rate' | 'mean') => void;
   serviceRateValue: string;
   onServiceRateValueChange: (value: string) => void;
   serviceRateUnit: TimeUnit;
@@ -36,10 +36,10 @@ interface InputFormProps {
   onServiceTimeUnitChange: (value: TimeUnit) => void;
   serviceTime: string;
   onServiceTimeChange: (value: string) => void;
-  serviceInputMode: "meanSpread" | "minMax" | "thetaK";
-  onServiceInputModeChange: (value: "meanSpread" | "minMax" | "thetaK") => void;
-  serviceSpreadType: "variance" | "stdDev";
-  onServiceSpreadTypeChange: (value: "variance" | "stdDev") => void;
+  serviceInputMode: 'meanSpread' | 'minMax' | 'thetaK';
+  onServiceInputModeChange: (value: 'meanSpread' | 'minMax' | 'thetaK') => void;
+  serviceSpreadType: 'variance' | 'stdDev';
+  onServiceSpreadTypeChange: (value: 'variance' | 'stdDev') => void;
   serviceSpreadValue: string;
   onServiceSpreadValueChange: (value: string) => void;
   serviceMinTime: string;
@@ -50,10 +50,10 @@ interface InputFormProps {
   onServiceGammaThetaChange: (value: string) => void;
   serviceGammaK: string;
   onServiceGammaKChange: (value: string) => void;
-  arrivalInputMode: "meanSpread" | "minMax" | "thetaK";
-  onArrivalInputModeChange: (value: "meanSpread" | "minMax" | "thetaK") => void;
-  arrivalSpreadType: "variance" | "stdDev";
-  onArrivalSpreadTypeChange: (value: "variance" | "stdDev") => void;
+  arrivalInputMode: 'meanSpread' | 'minMax' | 'thetaK';
+  onArrivalInputModeChange: (value: 'meanSpread' | 'minMax' | 'thetaK') => void;
+  arrivalSpreadType: 'variance' | 'stdDev';
+  onArrivalSpreadTypeChange: (value: 'variance' | 'stdDev') => void;
   arrivalSpreadValue: string;
   onArrivalSpreadValueChange: (value: string) => void;
   arrivalMinTime: string;
@@ -64,10 +64,10 @@ interface InputFormProps {
   onArrivalGammaThetaChange: (value: string) => void;
   arrivalGammaK: string;
   onArrivalGammaKChange: (value: string) => void;
-  ggServiceInputMode: "meanSpread" | "minMax" | "thetaK";
-  onGgServiceInputModeChange: (value: "meanSpread" | "minMax" | "thetaK") => void;
-  ggServiceSpreadType: "variance" | "stdDev";
-  onGgServiceSpreadTypeChange: (value: "variance" | "stdDev") => void;
+  ggServiceInputMode: 'meanSpread' | 'minMax' | 'thetaK';
+  onGgServiceInputModeChange: (value: 'meanSpread' | 'minMax' | 'thetaK') => void;
+  ggServiceSpreadType: 'variance' | 'stdDev';
+  onGgServiceSpreadTypeChange: (value: 'variance' | 'stdDev') => void;
   ggServiceSpreadValue: string;
   onGgServiceSpreadValueChange: (value: string) => void;
   ggServiceMinTime: string;
@@ -79,120 +79,6 @@ interface InputFormProps {
   effectiveModel: string;
   onSubmit: (e: FormEvent) => void;
   isLoading: boolean;
-}
-
-const timeUnitOptions: TimeUnit[] = ["seconds", "minutes", "hours"];
-
-function optionLabel(unit: TimeUnit, variant: "rate" | "duration") {
-  if (variant === "rate") {
-    return unit === "seconds" ? "/ sec" : unit === "minutes" ? "/ min" : "/ hr";
-  }
-  return unit === "seconds" ? "sec" : unit === "minutes" ? "min" : "hr";
-}
-
-function SegmentedControl({
-  value,
-  options,
-  onChange,
-  disabled,
-}: {
-  value: string;
-  options: Array<{ value: string; label: string }>;
-  onChange: (value: string) => void;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="panel-strip">
-      {options.map((option) => {
-        const active = value === option.value;
-        return (
-          <button
-            key={option.value}
-            type="button"
-            disabled={disabled}
-            onClick={() => onChange(option.value)}
-            className={`control-pill ${active ? "control-pill-active" : ""}`}
-          >
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function FieldCard({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="field-card">
-      <div className="field-head">
-        <p className="field-label">{label}</p>
-        {hint ? <p className="field-hint">{hint}</p> : null}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function TextInput({
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  min = "0.0001",
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  min?: string;
-}) {
-  return (
-    <input
-      type="number"
-      step="any"
-      min={min}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      disabled={disabled}
-      placeholder={placeholder}
-      className="field-input"
-    />
-  );
-}
-
-function UnitSelect({
-  value,
-  onChange,
-  disabled,
-  variant,
-}: {
-  value: TimeUnit;
-  onChange: (value: TimeUnit) => void;
-  disabled?: boolean;
-  variant: "rate" | "duration";
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(event) => onChange(event.target.value as TimeUnit)}
-      disabled={disabled}
-      className="field-select"
-    >
-      {timeUnitOptions.map((unit) => (
-        <option key={unit} value={unit}>
-          {optionLabel(unit, variant)}
-        </option>
-      ))}
-    </select>
-  );
 }
 
 export default function InputForm({
@@ -270,16 +156,16 @@ export default function InputForm({
   onSubmit,
   isLoading,
 }: InputFormProps) {
-  const isMgModel = effectiveModel.startsWith("M/G/");
-  const isGgModel = effectiveModel.startsWith("G/G/");
+  const isMgModel = effectiveModel.startsWith('M/G/');
+  const isGgModel = effectiveModel.startsWith('G/G/');
+  const arrIsUniform = mode === 'auto' && arrivalDistribution === 'Uniform';
+  const svcIsUniform = mode === 'auto' && serviceDistribution === 'Uniform';
 
-  const getEffMode = (distribution: string, currentMode: string) => {
-    if (mode === "manual") return currentMode;
-    if (distribution === "Uniform") return "minMax";
-    if (distribution === "Normal") return "meanSpread";
-    if (distribution === "Gamma") {
-      return currentMode === "thetaK" ? "thetaK" : "meanSpread";
-    }
+  const getEffMode = (dist: string, currentMode: string) => {
+    if (mode === 'manual') return currentMode;
+    if (dist === 'Uniform') return 'minMax';
+    if (dist === 'Normal') return 'meanSpread';
+    if (dist === 'Gamma') return currentMode === 'thetaK' ? 'thetaK' : 'meanSpread';
     return currentMode;
   };
 
@@ -287,522 +173,667 @@ export default function InputForm({
   const effArrMode = getEffMode(arrivalDistribution, arrivalInputMode);
   const effGgSvcMode = getEffMode(serviceDistribution, ggServiceInputMode);
 
-  const serverOptions =
-    manualServerMode === "single"
-      ? [
-          { value: "M/M/1", label: "M/M/1" },
-          { value: "M/G/1", label: "M/G/1" },
-          { value: "G/G/1", label: "G/G/1" },
-        ]
-      : [
-          { value: "M/M/s", label: "M/M/s" },
-          { value: "M/G/s", label: "M/G/s" },
-          { value: "G/G/s", label: "G/G/s" },
-        ];
+  const mgSpreadValid = isMgModel
+    ? (effMgSvcMode === 'minMax'
+      ? Boolean(serviceMinTime && serviceMaxTime && parseFloat(serviceMinTime) > 0 && parseFloat(serviceMaxTime) > 0)
+      : Boolean(serviceSpreadValue && parseFloat(serviceSpreadValue) >= 0))
+    : true;
 
-  const isValid =
-    Boolean(effectiveModel) &&
-    servers >= 1 &&
-    (mode === "manual" ? Boolean(selectedModel) : Boolean(arrivalDistribution)) &&
-    Boolean(serviceDistribution);
+  const serviceValid = (isMgModel && effMgSvcMode === 'minMax') || (isGgModel && effGgSvcMode === 'minMax')
+    ? true // Min/Max handled strictly by mgSpreadValid/ggServiceValid respectively
+    : serviceInputType === 'rate'
+      ? Boolean(serviceRateValue && parseFloat(serviceRateValue) > 0 && mgSpreadValid)
+      : Boolean(serviceTime && parseFloat(serviceTime) > 0 && mgSpreadValid);
 
-  const arrivalLabel =
-    arrivalInputType === "rate" ? "Arrival rate" : "Mean inter-arrival time";
+  const ggArrivalValid = isGgModel
+    ? (effArrMode === 'minMax'
+      ? Boolean(arrivalMinTime && arrivalMaxTime && parseFloat(arrivalMinTime) > 0 && parseFloat(arrivalMaxTime) > 0)
+      : Boolean(arrivalSpreadValue && parseFloat(arrivalSpreadValue) >= 0))
+    : true;
 
-  const serviceLabel = serviceInputType === "rate" ? "Service rate" : "Service time";
+  const ggServiceValid = isGgModel
+    ? (effGgSvcMode === 'minMax'
+      ? Boolean(ggServiceMinTime && ggServiceMaxTime && parseFloat(ggServiceMinTime) > 0 && parseFloat(ggServiceMaxTime) > 0)
+      : Boolean(ggServiceSpreadValue && parseFloat(ggServiceSpreadValue) >= 0))
+    : true;
+
+  const baseValid =
+    (isGgModel && effArrMode === 'minMax'
+      ? ggArrivalValid
+      : Boolean(arrivalValue && parseFloat(arrivalValue) > 0 && ggArrivalValid)) &&
+    serviceValid &&
+    servers >= 1;
+
+  const modeValid =
+    mode === 'manual'
+      ? Boolean(selectedModel)
+      : Boolean(arrivalDistribution) && Boolean(serviceDistribution);
+
+  const modelSupported = Boolean(effectiveModel);
+
+  const isValid = Boolean(baseValid && modeValid && modelSupported && ggArrivalValid && ggServiceValid);
+  const modelOptions =
+    manualServerMode === 'single'
+      ? ['M/M/1', 'M/G/1', 'G/G/1']
+      : ['M/M/s', 'M/G/s', 'G/G/s'];
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
-      <section className="section-shell">
-        <div className="section-header">
-          <div>
-            <p className="eyebrow">Core mode</p>
-            <h3 className="section-title">Choose the routing style</h3>
-          </div>
+    <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_8px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.3)] p-6 sm:p-10 border border-white/60 dark:border-slate-800/60 animate-slideUp">
+      <div className="flex items-center gap-5 mb-10">
+        <div className="w-14 h-14 bg-linear-to-br from-violet-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/25">
+          <SlidersHorizontal className="w-7 h-7 text-white" />
         </div>
-        <SegmentedControl
-          value={mode}
-          onChange={(value) => onModeChange(value as "manual" | "auto")}
-          disabled={isLoading}
-          options={[
-            { value: "manual", label: "Manual lane" },
-            { value: "auto", label: "Auto detect" },
-          ]}
-        />
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 tracking-tight">
+            Simulation Parameters
+          </h2>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Configure and tune your queuing model</p>
+        </div>
+      </div>
 
-        {mode === "manual" ? (
-          <div className="grid gap-5 md:grid-cols-2">
-            <FieldCard label="Server topology" hint="Single or multi-server build">
-              <SegmentedControl
-                value={manualServerMode}
-                onChange={(value) =>
-                  onManualServerModeChange(value as "single" | "multi")
-                }
-                disabled={isLoading}
-                options={[
-                  { value: "single", label: "Single" },
-                  { value: "multi", label: "Multi" },
-                ]}
-              />
-            </FieldCard>
+      <form onSubmit={onSubmit} className="space-y-8">
+        <div className="bg-slate-50/50 dark:bg-slate-800/30 p-6 rounded-4xl border border-slate-200/50 dark:border-slate-700/50 space-y-6">
+          {mode === 'manual' ? (
+            <div>
+              <div className="mb-4">
+                <p className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">
+                  Server Type
+                </p>
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200/50 dark:bg-slate-900/50 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => onManualServerModeChange('single')}
+                    disabled={isLoading}
+                    className={`py-2 rounded-lg text-xs font-bold transition-all ${manualServerMode === 'single'
+                        ? 'bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                      } disabled:opacity-40 disabled:cursor-not-allowed`}
+                  >
+                    Single Server
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onManualServerModeChange('multi')}
+                    disabled={isLoading}
+                    className={`py-2 rounded-lg text-xs font-bold transition-all ${manualServerMode === 'multi'
+                        ? 'bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                      } disabled:opacity-40 disabled:cursor-not-allowed`}
+                  >
+                    Multi Server
+                  </button>
+                </div>
+              </div>
 
-            <FieldCard label="Model family" hint="Pick the queue family directly">
-              <select
-                value={selectedModel}
-                onChange={(event) => onSelectedModelChange(event.target.value)}
-                disabled={isLoading}
-                className="field-input"
+              <label
+                htmlFor="model-select"
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
               >
-                <option value="" disabled>
-                  Select a model
-                </option>
-                {serverOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                Select Queue Model
+              </label>
+              <select
+                id="model-select"
+                value={selectedModel}
+                onChange={(e) => onSelectedModelChange(e.target.value)}
+                className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 
+                         bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                         focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                         transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+              >
+                <option value="" disabled>Choose a model family...</option>
+                {modelOptions.map((model) => (
+                  <option key={model} value={model}>
+                    {model}
                   </option>
                 ))}
               </select>
-            </FieldCard>
-          </div>
-        ) : (
-          <div className="grid gap-5 md:grid-cols-2">
-            <FieldCard label="Arrival source" hint="Auto mode infers the family">
-              <select
-                value={arrivalProcessType}
-                onChange={(event) =>
-                  onArrivalProcessTypeChange(
-                    event.target.value as "arrival" | "interArrival",
-                  )
-                }
-                disabled={isLoading}
-                className="field-input"
-              >
-                <option value="arrival">Arrival distribution</option>
-                <option value="interArrival">Inter-arrival distribution</option>
-              </select>
-
-              <div className="mt-3">
-                {arrivalProcessType === "arrival" ? (
-                  <div className="field-note">Poisson is fixed for arrival mode.</div>
-                ) : (
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                    Arrival Process Type
+                  </label>
                   <select
-                    value={arrivalDistribution}
-                    onChange={(event) =>
-                      onArrivalDistributionChange(event.target.value)
-                    }
-                    disabled={isLoading}
-                    className="field-input"
+                    value={arrivalProcessType}
+                    onChange={(e) => onArrivalProcessTypeChange(e.target.value as "arrival" | "interArrival")}
+                    className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 
+                           bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                           focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                           transition-all shadow-sm hover:shadow-md cursor-pointer"
                   >
-                    <option value="Exponential">Exponential</option>
-                    <option value="Uniform">Uniform</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Gamma">Gamma</option>
+                    <option value="arrival">Arrival Distribution</option>
+                    <option value="interArrival">Inter-Arrival Distribution</option>
                   </select>
+                </div>
+                {arrivalProcessType === "interArrival" ? (
+                  <div className="animate-slideUp">
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                      Distribution
+                    </label>
+                    <select
+                      value={arrivalDistribution}
+                      onChange={(e) => onArrivalDistributionChange(e.target.value)}
+                      className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 
+                             bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                             focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                             transition-all shadow-sm hover:shadow-md cursor-pointer"
+                    >
+                      <option value="" disabled>Choose...</option>
+                      <option value="Exponential">Exponential (M)</option>
+                      <option value="Uniform">Uniform (G)</option>
+                      <option value="Normal">Normal (G)</option>
+                      <option value="Gamma">Gamma (G)</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div className="animate-slideUp">
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 opacity-60">
+                      Distribution
+                    </label>
+                    <div className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 bg-slate-100/50 dark:bg-slate-800/50 text-slate-500 font-semibold cursor-not-allowed">
+                      Poisson (M)
+                    </div>
+                  </div>
                 )}
               </div>
-            </FieldCard>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                  Service Distribution
+                </label>
+                <select
+                  value={serviceDistribution}
+                  onChange={(e) => onServiceDistributionChange(e.target.value)}
+                  className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 
+                         bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                         focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                         transition-all shadow-sm hover:shadow-md cursor-pointer"
+                >
+                  <option value="" disabled>Choose...</option>
+                  {!(mode === 'auto' && arrivalProcessType === 'interArrival' && arrivalDistribution && arrivalDistribution !== 'Exponential') && (
+                    <option value="Exponential">Exponential (M)</option>
+                  )}
+                  <option value="Uniform">Uniform (G)</option>
+                  <option value="Normal">Normal (G)</option>
+                  <option value="Gamma">Gamma (G)</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
 
-            <FieldCard label="Service source" hint="Choose the service distribution">
-              <select
-                value={serviceDistribution}
-                onChange={(event) => onServiceDistributionChange(event.target.value)}
-                disabled={isLoading}
-                className="field-input"
-              >
-                {!(mode === "auto" && arrivalProcessType === "interArrival" && arrivalDistribution !== "Exponential") && (
-                  <option value="Exponential">Exponential</option>
-                )}
-                <option value="Uniform">Uniform</option>
-                <option value="Normal">Normal</option>
-                <option value="Gamma">Gamma</option>
-              </select>
-            </FieldCard>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Arrival Input */}
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 p-6 rounded-4xl border border-slate-200/50 dark:border-slate-700/50">
+            <p className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Inter-Arrival Input</p>
+            <div className="flex flex-col gap-4">
+
+              {/* Spread / MinMax toggle for G/G */}
+              {((isGgModel && mode === 'manual') || (mode === 'auto' && arrivalDistribution === 'Gamma')) && (
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200/50 dark:bg-slate-900/50 rounded-xl">
+                  <button type="button" onClick={() => onArrivalInputModeChange('meanSpread')} disabled={isLoading}
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all ${arrivalInputMode === 'meanSpread' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                    Spread (Mean/Rate & Var)
+                  </button>
+                  {arrivalDistribution !== 'Gamma' && (
+                    <button type="button" onClick={() => onArrivalInputModeChange('minMax')} disabled={isLoading}
+                      className={`py-1.5 rounded-lg text-xs font-bold transition-all ${arrivalInputMode === 'minMax' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                      Range
+                    </button>
+                  )}
+                  {arrivalDistribution === 'Gamma' && (
+                    <button type="button" onClick={() => onArrivalInputModeChange('thetaK')} disabled={isLoading}
+                      className={`py-1.5 rounded-lg text-xs font-bold transition-all ${arrivalInputMode === 'thetaK' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                      Theta & K
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {effArrMode === 'thetaK' ? (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  <div className="bg-brand-50 dark:bg-brand-900/10 border border-brand-200 dark:border-brand-800/30 p-3 rounded-xl">
+                    <p className="text-xs font-semibold text-brand-600 dark:text-brand-400">
+                      Mean and variance will be calculated automatically from Theta and K.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Gamma Parameters</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="number" step="any" min="0.01"
+                        value={arrivalGammaTheta}
+                        onChange={(e) => onArrivalGammaThetaChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Theta (Scale)" disabled={isLoading} required />
+                      <input type="number" step="any" min="0.01"
+                        value={arrivalGammaK}
+                        onChange={(e) => onArrivalGammaKChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="K (Shape)" disabled={isLoading} required />
+                    </div>
+                  </div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Time Unit
+                    </span>
+                    <select
+                      value={arrivalTimeUnit}
+                      onChange={(e) => onArrivalTimeUnitChange(e.target.value as TimeUnit)}
+                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                      disabled={isLoading}
+                    >
+                      <option value="seconds">Seconds</option>
+                      <option value="minutes">Minutes</option>
+                      <option value="hours">Hours</option>
+                    </select>
+                  </div>
+                </div>
+              ) : (isGgModel && effArrMode === 'minMax') ? (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  <div className="bg-brand-50 dark:bg-brand-900/10 border border-brand-200 dark:border-brand-800/30 p-3 rounded-xl">
+                    <p className="text-xs font-semibold text-brand-600 dark:text-brand-400">
+                      Min/Max values are converted into mean and variance automatically.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Inter-arrival Range</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="number" step="any" min="0.01"
+                        value={arrivalMinTime}
+                        onChange={(e) => onArrivalMinTimeChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Min (e.g. 0.5)" disabled={isLoading} required />
+                      <input type="number" step="any" min="0.01"
+                        value={arrivalMaxTime}
+                        onChange={(e) => onArrivalMaxTimeChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Max (e.g. 2.0)" disabled={isLoading} required />
+                    </div>
+                  </div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Time Unit
+                    </span>
+                    <select
+                      value={arrivalTimeUnit}
+                      onChange={(e) => onArrivalTimeUnitChange(e.target.value as TimeUnit)}
+                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                      disabled={isLoading}
+                    >
+                      <option value="seconds">Seconds</option>
+                      <option value="minutes">Minutes</option>
+                      <option value="hours">Hours</option>
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-200/50 dark:bg-slate-900/50 rounded-2xl">
+                    <button
+                      type="button"
+                      onClick={() => onArrivalInputTypeChange('rate')}
+                      disabled={isLoading}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all ${arrivalInputType === 'rate'
+                          ? 'bg-brand-500 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                        } disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                      Rate (λ)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onArrivalInputTypeChange('meanInterArrival')}
+                      disabled={isLoading}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all ${arrivalInputType === 'meanInterArrival'
+                          ? 'bg-brand-500 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                        } disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                      Mean Time
+                    </button>
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        {arrivalInputType === 'rate' ? 'Rate Unit' : 'Time Unit'}
+                      </span>
+                      <select
+                        value={arrivalTimeUnit}
+                        onChange={(e) => onArrivalTimeUnitChange(e.target.value as TimeUnit)}
+                        className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                        disabled={isLoading}
+                      >
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                      </select>
+                    </div>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.01"
+                      value={arrivalValue}
+                      onChange={(e) => onArrivalValueChange(e.target.value)}
+                      className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 
+                               bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                               focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                               transition-all shadow-sm hover:shadow-md disabled:opacity-50 text-lg font-semibold"
+                      placeholder={arrivalInputType === 'rate' ? 'Rate (e.g. 0.8)' : 'Time (e.g. 1.25)'}
+                      disabled={isLoading}
+                      required
+                    />
+                  </div>
+
+                  {/* Spread — for G/G models */}
+                  {isGgModel && (
+                    <div className="flex flex-col gap-2 pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Spread Type</span>
+                        <select value={arrivalSpreadType} onChange={(e) => onArrivalSpreadTypeChange(e.target.value as 'variance' | 'stdDev')}
+                          className="bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/50 rounded-lg px-2 py-1 text-xs font-bold cursor-pointer outline-none">
+                          <option value="variance">Variance</option>
+                          <option value="stdDev">Standard Dev</option>
+                        </select>
+                      </div>
+                      <input type="number" step="any" min="0" value={arrivalSpreadValue} onChange={(e) => onArrivalSpreadValueChange(e.target.value)}
+                        className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-lg font-semibold"
+                        placeholder={arrivalSpreadType === 'variance' ? 'Variance (e.g. 1.44)' : 'Std Dev (e.g. 1.2)'}
+                        disabled={isLoading} required />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Service Input */}
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 p-6 rounded-4xl border border-slate-200/50 dark:border-slate-700/50">
+            <p className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Service Input</p>
+            <div className="flex flex-col gap-4">
+
+              {/* Spread / MinMax toggle for M/G and G/G */}
+              {(((isMgModel || isGgModel) && mode === 'manual') || (mode === 'auto' && serviceDistribution === 'Gamma')) && (
+                <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200/50 dark:bg-slate-900/50 rounded-xl">
+                  <button type="button" onClick={() => {
+                    if (isMgModel || mode === 'auto') onServiceInputModeChange('meanSpread');
+                    if (isGgModel || mode === 'auto') onGgServiceInputModeChange('meanSpread');
+                  }} disabled={isLoading}
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all ${(isMgModel ? effMgSvcMode : effGgSvcMode) === 'meanSpread' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                    Spread (Mean/Rate & Var)
+                  </button>
+                  {serviceDistribution !== 'Gamma' && (
+                    <button type="button" onClick={() => {
+                      if (isMgModel || mode === 'auto') onServiceInputModeChange('minMax');
+                      if (isGgModel || mode === 'auto') onGgServiceInputModeChange('minMax');
+                    }} disabled={isLoading}
+                      className={`py-1.5 rounded-lg text-xs font-bold transition-all ${(isMgModel ? effMgSvcMode : effGgSvcMode) === 'minMax' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                      Range
+                    </button>
+                  )}
+                  {serviceDistribution === 'Gamma' && (
+                    <button type="button" onClick={() => {
+                      if (isMgModel || mode === 'auto') onServiceInputModeChange('thetaK');
+                      if (isGgModel || mode === 'auto') onGgServiceInputModeChange('thetaK');
+                    }} disabled={isLoading}
+                      className={`py-1.5 rounded-lg text-xs font-bold transition-all ${(isMgModel ? effMgSvcMode : effGgSvcMode) === 'thetaK' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'} disabled:opacity-40`}>
+                      Theta & K
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {((isMgModel && effMgSvcMode === 'thetaK') || (isGgModel && effGgSvcMode === 'thetaK')) ? (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  <div className="bg-brand-50 dark:bg-brand-900/10 border border-brand-200 dark:border-brand-800/30 p-3 rounded-xl">
+                    <p className="text-xs font-semibold text-brand-600 dark:text-brand-400">
+                      Mean and variance will be calculated automatically from Theta and K.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Gamma Parameters</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="number" step="any" min="0.01"
+                        value={serviceGammaTheta}
+                        onChange={(e) => onServiceGammaThetaChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Theta (Scale)" disabled={isLoading} required />
+                      <input type="number" step="any" min="0.01"
+                        value={serviceGammaK}
+                        onChange={(e) => onServiceGammaKChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="K (Shape)" disabled={isLoading} required />
+                    </div>
+                  </div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Time Unit
+                    </span>
+                    <select
+                      value={serviceTimeUnit}
+                      onChange={(e) => onServiceTimeUnitChange(e.target.value as TimeUnit)}
+                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                      disabled={isLoading}
+                    >
+                      <option value="seconds">Seconds</option>
+                      <option value="minutes">Minutes</option>
+                      <option value="hours">Hours</option>
+                    </select>
+                  </div>
+                </div>
+              ) : ((isMgModel && effMgSvcMode === 'minMax') || (isGgModel && effGgSvcMode === 'minMax')) ? (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  <div className="bg-brand-50 dark:bg-brand-900/10 border border-brand-200 dark:border-brand-800/30 p-3 rounded-xl">
+                    <p className="text-xs font-semibold text-brand-600 dark:text-brand-400">
+                      Min/Max values are converted into mean and variance automatically.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Service Range</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="number" step="any" min="0.01"
+                        value={isMgModel ? serviceMinTime : ggServiceMinTime}
+                        onChange={(e) => isMgModel ? onServiceMinTimeChange(e.target.value) : onGgServiceMinTimeChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Min (e.g. 0.5)" disabled={isLoading} required />
+                      <input type="number" step="any" min="0.01"
+                        value={isMgModel ? serviceMaxTime : ggServiceMaxTime}
+                        onChange={(e) => isMgModel ? onServiceMaxTimeChange(e.target.value) : onGgServiceMaxTimeChange(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-base font-semibold"
+                        placeholder="Max (e.g. 2.0)" disabled={isLoading} required />
+                    </div>
+                  </div>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Time Unit
+                    </span>
+                    <select
+                      value={serviceTimeUnit}
+                      onChange={(e) => onServiceTimeUnitChange(e.target.value as TimeUnit)}
+                      className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                      disabled={isLoading}
+                    >
+                      <option value="seconds">Seconds</option>
+                      <option value="minutes">Minutes</option>
+                      <option value="hours">Hours</option>
+                    </select>
+                  </div>
+                </div>
+              ) : (
+                <div className="animate-slideUp flex flex-col gap-4">
+                  {/* Rate (μ) | Mean Time */}
+                  <div className="grid grid-cols-2 gap-2 p-1.5 bg-slate-200/50 dark:bg-slate-900/50 rounded-2xl">
+                    <button
+                      type="button"
+                      onClick={() => onServiceInputTypeChange('rate')}
+                      disabled={isLoading}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all ${serviceInputType === 'rate'
+                          ? 'bg-brand-500 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                        } disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                      Rate (μ)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onServiceInputTypeChange('mean')}
+                      disabled={isLoading}
+                      className={`py-2 rounded-xl text-xs font-bold transition-all ${serviceInputType === 'mean'
+                          ? 'bg-brand-500 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                        } disabled:opacity-40 disabled:cursor-not-allowed`}
+                    >
+                      Mean Time
+                    </button>
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        {serviceInputType === 'rate' ? 'Rate Unit' : 'Service Time Unit'}
+                      </span>
+                      <select
+                        value={serviceInputType === 'rate' ? serviceRateUnit : serviceTimeUnit}
+                        onChange={(e) =>
+                          serviceInputType === 'rate'
+                            ? onServiceRateUnitChange(e.target.value as TimeUnit)
+                            : onServiceTimeUnitChange(e.target.value as TimeUnit)
+                        }
+                        className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none"
+                        disabled={isLoading}
+                      >
+                        <option value="seconds">Seconds</option>
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                      </select>
+                    </div>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0.01"
+                      value={serviceInputType === 'rate' ? serviceRateValue : serviceTime}
+                      onChange={(e) =>
+                        serviceInputType === 'rate'
+                          ? onServiceRateValueChange(e.target.value)
+                          : onServiceTimeChange(e.target.value)
+                      }
+                      className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700
+                               bg-white/80 dark:bg-slate-900/80 backdrop-blur-md text-slate-900 dark:text-white
+                               focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none
+                               transition-all shadow-sm hover:shadow-md disabled:opacity-50 text-lg font-semibold"
+                      placeholder={serviceInputType === 'rate' ? 'Rate (e.g. 0.5)' : 'Mean time (e.g., 1.5)'}
+                      disabled={isLoading}
+                      required
+                    />
+                  </div>
+
+                  {/* Spread — for M/G models */}
+                  {isMgModel && (
+                    <div className="flex flex-col gap-2 pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Spread Type</span>
+                        <select value={serviceSpreadType} onChange={(e) => onServiceSpreadTypeChange(e.target.value as 'variance' | 'stdDev')}
+                          className="bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/50 rounded-lg px-2 py-1 text-xs font-bold cursor-pointer outline-none">
+                          <option value="variance">Variance</option>
+                          <option value="stdDev">Standard Dev</option>
+                        </select>
+                      </div>
+                      <input type="number" step="any" min="0" value={serviceSpreadValue} onChange={(e) => onServiceSpreadValueChange(e.target.value)}
+                        className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-lg font-semibold"
+                        placeholder={serviceSpreadType === 'variance' ? 'Variance (e.g., 0.8)' : 'Std Dev (e.g., 0.9)'}
+                        disabled={isLoading} required />
+                    </div>
+                  )}
+
+                  {/* Spread — for G/G models */}
+                  {isGgModel && (
+                    <div className="flex flex-col gap-2 pt-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Spread Type</span>
+                        <select value={ggServiceSpreadType} onChange={(e) => onGgServiceSpreadTypeChange(e.target.value as 'variance' | 'stdDev')}
+                          className="bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/50 rounded-lg px-2 py-1 text-xs font-bold cursor-pointer outline-none">
+                          <option value="variance">Variance</option>
+                          <option value="stdDev">Standard Dev</option>
+                        </select>
+                      </div>
+                      <input type="number" step="any" min="0" value={ggServiceSpreadValue} onChange={(e) => onGgServiceSpreadValueChange(e.target.value)}
+                        className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-lg font-semibold"
+                        placeholder={ggServiceSpreadType === 'variance' ? 'Variance (e.g., 0.81)' : 'Std Dev (e.g., 0.9)'}
+                        disabled={isLoading} required />
+                    </div>
+                  )}
+
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Server Settings (only for multi-server) */}
+        {(mode === 'auto' || manualServerMode === 'multi') && (
+          <div className="bg-slate-50/50 dark:bg-slate-800/30 p-6 rounded-4xl border border-slate-200/50 dark:border-slate-700/50">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">
+              Servers Configuration
+            </label>
+            <input
+              type="number"
+              min="1"
+              value={servers || ''}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                onServersChange(isNaN(val) ? 0 : val);
+              }}
+              className="w-full px-5 py-4 rounded-xl border border-white dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition-all shadow-sm text-2xl font-extrabold text-center font-mono tracking-widest"
+              disabled={isLoading}
+              required
+            />
           </div>
         )}
-      </section>
 
-      <section className="grid gap-6 xl:grid-cols-2">
-        <div className="section-shell">
-          <div className="section-header">
-            <div>
-              <p className="eyebrow">Arrival channel</p>
-              <h3 className="section-title">Shape the incoming flow</h3>
-            </div>
-          </div>
-
-          {mode === "manual" && isGgModel ? (
-            <SegmentedControl
-              value={arrivalInputMode}
-              onChange={(value) =>
-                onArrivalInputModeChange(
-                  value as "meanSpread" | "minMax" | "thetaK",
-                )
-              }
-              disabled={isLoading}
-              options={[
-                { value: "meanSpread", label: "Mean + spread" },
-                { value: "minMax", label: "Min / max" },
-                { value: "thetaK", label: "Theta + K" },
-              ]}
-            />
-          ) : mode === "auto" && arrivalDistribution === "Gamma" ? (
-            <SegmentedControl
-              value={arrivalInputMode}
-              onChange={(value) =>
-                onArrivalInputModeChange(
-                  value as "meanSpread" | "minMax" | "thetaK",
-                )
-              }
-              disabled={isLoading}
-              options={[
-                { value: "meanSpread", label: "Mean + spread" },
-                { value: "thetaK", label: "Theta + K" },
-              ]}
-            />
-          ) : null}
-
-          {effArrMode === "thetaK" ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              <FieldCard label="Theta" hint="Scale parameter">
-                <TextInput
-                  value={arrivalGammaTheta}
-                  onChange={onArrivalGammaThetaChange}
-                  disabled={isLoading}
-                  placeholder="Theta"
-                />
-              </FieldCard>
-              <FieldCard label="K" hint="Shape parameter">
-                <TextInput
-                  value={arrivalGammaK}
-                  onChange={onArrivalGammaKChange}
-                  disabled={isLoading}
-                  placeholder="K"
-                />
-              </FieldCard>
-            </div>
-          ) : effArrMode === "minMax" ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              <FieldCard label="Minimum" hint="Lower bound">
-                <TextInput
-                  value={arrivalMinTime}
-                  onChange={onArrivalMinTimeChange}
-                  disabled={isLoading}
-                  placeholder="Min"
-                />
-              </FieldCard>
-              <FieldCard label="Maximum" hint="Upper bound">
-                <TextInput
-                  value={arrivalMaxTime}
-                  onChange={onArrivalMaxTimeChange}
-                  disabled={isLoading}
-                  placeholder="Max"
-                />
-              </FieldCard>
-            </div>
-          ) : (
-            <>
-              <div className="panel-strip">
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => onArrivalInputTypeChange("rate")}
-                  className={`control-pill ${arrivalInputType === "rate" ? "control-pill-active" : ""}`}
-                >
-                  Rate
-                </button>
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => onArrivalInputTypeChange("meanInterArrival")}
-                  className={`control-pill ${arrivalInputType === "meanInterArrival" ? "control-pill-active" : ""}`}
-                >
-                  Mean time
-                </button>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_9rem]">
-                <FieldCard label={arrivalLabel} hint="Primary arrival input">
-                  <TextInput
-                    value={arrivalValue}
-                    onChange={onArrivalValueChange}
-                    disabled={isLoading}
-                    placeholder={arrivalInputType === "rate" ? "e.g. 3.2" : "e.g. 1.4"}
-                  />
-                </FieldCard>
-                <FieldCard label="Unit" hint="Time scale">
-                  <UnitSelect
-                    value={arrivalTimeUnit}
-                    onChange={onArrivalTimeUnitChange}
-                    disabled={isLoading}
-                    variant={arrivalInputType === "rate" ? "rate" : "duration"}
-                  />
-                </FieldCard>
-              </div>
-
-              {(isGgModel || mode === "auto") && effArrMode !== "minMax" && effArrMode !== "thetaK" ? (
-                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_10rem]">
-                  <FieldCard label="Arrival spread type" hint="Variance or std dev">
-                    <SegmentedControl
-                      value={arrivalSpreadType}
-                      onChange={(value) =>
-                        onArrivalSpreadTypeChange(value as "variance" | "stdDev")
-                      }
-                      disabled={isLoading}
-                      options={[
-                        { value: "variance", label: "Variance" },
-                        { value: "stdDev", label: "Std dev" },
-                      ]}
-                    />
-                  </FieldCard>
-                  <FieldCard label="Spread" hint="Variability">
-                    <TextInput
-                      value={arrivalSpreadValue}
-                      onChange={onArrivalSpreadValueChange}
-                      disabled={isLoading}
-                      placeholder="e.g. 0.8"
-                      min="0"
-                    />
-                  </FieldCard>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
-
-        <div className="section-shell">
-          <div className="section-header">
-            <div>
-              <p className="eyebrow">Service channel</p>
-              <h3 className="section-title">Set the processing side</h3>
-            </div>
-          </div>
-
-          {((isMgModel || isGgModel) && mode === "manual") ||
-          (mode === "auto" && serviceDistribution === "Gamma") ? (
-            <SegmentedControl
-              value={isMgModel ? effMgSvcMode : effGgSvcMode}
-              onChange={(value) => {
-                if (isMgModel || mode === "auto") {
-                  onServiceInputModeChange(value as "meanSpread" | "minMax" | "thetaK");
-                }
-                if (isGgModel || mode === "auto") {
-                  onGgServiceInputModeChange(value as "meanSpread" | "minMax" | "thetaK");
-                }
-              }}
-              disabled={isLoading}
-              options={[
-                { value: "meanSpread", label: "Mean + spread" },
-                { value: "minMax", label: "Min / max" },
-                { value: "thetaK", label: "Theta + K" },
-              ]}
-            />
-          ) : null}
-
-          {((isMgModel && effMgSvcMode === "thetaK") ||
-            (isGgModel && effGgSvcMode === "thetaK")) ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              <FieldCard label="Theta" hint="Scale parameter">
-                <TextInput
-                  value={serviceGammaTheta}
-                  onChange={onServiceGammaThetaChange}
-                  disabled={isLoading}
-                  placeholder="Theta"
-                />
-              </FieldCard>
-              <FieldCard label="K" hint="Shape parameter">
-                <TextInput
-                  value={serviceGammaK}
-                  onChange={onServiceGammaKChange}
-                  disabled={isLoading}
-                  placeholder="K"
-                />
-              </FieldCard>
-            </div>
-          ) : ((isMgModel && effMgSvcMode === "minMax") ||
-              (isGgModel && effGgSvcMode === "minMax")) ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              <FieldCard label="Minimum" hint="Lower bound">
-                <TextInput
-                  value={isMgModel ? serviceMinTime : ggServiceMinTime}
-                  onChange={
-                    isMgModel ? onServiceMinTimeChange : onGgServiceMinTimeChange
-                  }
-                  disabled={isLoading}
-                  placeholder="Min"
-                />
-              </FieldCard>
-              <FieldCard label="Maximum" hint="Upper bound">
-                <TextInput
-                  value={isMgModel ? serviceMaxTime : ggServiceMaxTime}
-                  onChange={
-                    isMgModel ? onServiceMaxTimeChange : onGgServiceMaxTimeChange
-                  }
-                  disabled={isLoading}
-                  placeholder="Max"
-                />
-              </FieldCard>
-            </div>
-          ) : (
-            <>
-              <div className="panel-strip">
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => onServiceInputTypeChange("rate")}
-                  className={`control-pill ${serviceInputType === "rate" ? "control-pill-active" : ""}`}
-                >
-                  Rate
-                </button>
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => onServiceInputTypeChange("mean")}
-                  className={`control-pill ${serviceInputType === "mean" ? "control-pill-active" : ""}`}
-                >
-                  Mean time
-                </button>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_9rem]">
-                <FieldCard label={serviceLabel} hint="Primary service input">
-                  <TextInput
-                    value={serviceInputType === "rate" ? serviceRateValue : serviceTime}
-                    onChange={
-                      serviceInputType === "rate"
-                        ? onServiceRateValueChange
-                        : onServiceTimeChange
-                    }
-                    disabled={isLoading}
-                    placeholder={serviceInputType === "rate" ? "e.g. 4.5" : "e.g. 0.8"}
-                  />
-                </FieldCard>
-                <FieldCard
-                  label="Unit"
-                  hint={serviceInputType === "rate" ? "Rate scale" : "Time scale"}
-                >
-                  <UnitSelect
-                    value={serviceInputType === "rate" ? serviceRateUnit : serviceTimeUnit}
-                    onChange={
-                      serviceInputType === "rate"
-                        ? onServiceRateUnitChange
-                        : onServiceTimeUnitChange
-                    }
-                    disabled={isLoading}
-                    variant={serviceInputType === "rate" ? "rate" : "duration"}
-                  />
-                </FieldCard>
-              </div>
-
-              {isMgModel ? (
-                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_10rem]">
-                  <FieldCard label="Spread type" hint="Variance or std dev">
-                    <SegmentedControl
-                      value={serviceSpreadType}
-                      onChange={(value) =>
-                        onServiceSpreadTypeChange(value as "variance" | "stdDev")
-                      }
-                      disabled={isLoading}
-                      options={[
-                        { value: "variance", label: "Variance" },
-                        { value: "stdDev", label: "Std dev" },
-                      ]}
-                    />
-                  </FieldCard>
-                  <FieldCard label="Spread" hint="Variability">
-                    <TextInput
-                      value={serviceSpreadValue}
-                      onChange={onServiceSpreadValueChange}
-                      disabled={isLoading}
-                      placeholder="e.g. 1.1"
-                      min="0"
-                    />
-                  </FieldCard>
-                </div>
-              ) : null}
-
-              {isGgModel ? (
-                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_10rem]">
-                  <FieldCard label="Spread type" hint="Variance or std dev">
-                    <SegmentedControl
-                      value={ggServiceSpreadType}
-                      onChange={(value) =>
-                        onGgServiceSpreadTypeChange(value as "variance" | "stdDev")
-                      }
-                      disabled={isLoading}
-                      options={[
-                        { value: "variance", label: "Variance" },
-                        { value: "stdDev", label: "Std dev" },
-                      ]}
-                    />
-                  </FieldCard>
-                  <FieldCard label="Spread" hint="Variability">
-                    <TextInput
-                      value={ggServiceSpreadValue}
-                      onChange={onGgServiceSpreadValueChange}
-                      disabled={isLoading}
-                      placeholder="e.g. 0.9"
-                      min="0"
-                    />
-                  </FieldCard>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
-      </section>
-
-      <section className="section-shell">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
-          <FieldCard label="Servers" hint="Active service channels">
-            <TextInput
-              value={String(servers || "")}
-              onChange={(value) => {
-                const parsedValue = parseInt(value, 10);
-                onServersChange(Number.isNaN(parsedValue) ? 0 : parsedValue);
-              }}
-              disabled={isLoading}
-              placeholder="1"
-              min="1"
-            />
-          </FieldCard>
-
-          <FieldCard label="Result unit" hint="Displayed output scale">
-            <UnitSelect
+        {/* Action Button & Metadata */}
+        <div className="pt-6 flex flex-col items-center">
+          <div className="mb-5 w-full max-w-md rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/70 dark:bg-slate-800/40 px-4 py-3 flex items-center justify-between gap-3">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Results Time Unit
+            </span>
+            <select
               value={resultTimeUnit}
-              onChange={onResultTimeUnitChange}
+              onChange={(e) => onResultTimeUnitChange(e.target.value as TimeUnit)}
+              className="bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold cursor-pointer outline-none"
               disabled={isLoading}
-              variant="duration"
-            />
-          </FieldCard>
-        </div>
-
-        {effectiveModel ? (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="badge-soft">Model: {effectiveModel}</span>
-            <span className="badge-soft">Servers: {servers}</span>
-            <span className="badge-soft">Mode: {mode === "manual" ? "Manual" : "Auto"}</span>
+            >
+              <option value="seconds">Seconds</option>
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+            </select>
           </div>
-        ) : null}
 
-        <button
-          type="submit"
-          disabled={isLoading || !isValid}
-          className="submit-button"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Processing
-            </>
-          ) : (
-            <>
-              <Play className="h-5 w-5" />
-              Run calculation
-            </>
-          )}
-          <Sparkles className="h-4 w-4 opacity-70" />
-        </button>
-      </section>
-    </form>
+          <button
+            type="submit"
+            disabled={!isValid || isLoading}
+            className="w-full max-w-md flex items-center justify-center gap-3 px-8 py-5
+                     bg-linear-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600
+                     text-white font-bold text-lg rounded-2xl shadow-xl shadow-brand-500/30
+                     transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]
+                     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:scale-100 disabled:shadow-none
+                     focus:ring-4 focus:ring-cyan-400/40 outline-none overflow-hidden relative group"
+          >
+            <div className="absolute inset-0 bg-white/20 w-1/2 -skew-x-30 -translate-x-[150%] group-hover:translate-x-[250%] transition-transform duration-700 ease-in-out"></div>
+            {isLoading ? (
+              <>
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span>Analyzing...</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-6 h-6 fill-current" />
+                <span>Analyze Model</span>
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

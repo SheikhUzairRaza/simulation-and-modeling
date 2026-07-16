@@ -1,17 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
-import {
-  Activity,
-  BarChart3,
-  SlidersHorizontal,
-  Menu,
-} from "lucide-react";
+import { useState, FormEvent } from "react";
+import { Toaster, toast } from "react-hot-toast";
+import { Menu, X } from "lucide-react";
+import Sidebar, { AppTab } from "@/components/Sidebar";
 import InputForm from "@/components/InputForm";
 import ResultsPanel, { SimulationResults } from "@/components/ResultsPanel";
 import ThemeToggle from "@/components/ThemeToggle";
-import Sidebar, { AppTab } from "@/components/Sidebar";
 
 type TimeUnit = "seconds" | "minutes" | "hours";
 
@@ -48,7 +43,11 @@ function detectModel(
       : "G";
   const service = serviceDistribution === "Exponential" ? "M" : "G";
 
-  return servers > 1 ? `${arrival}/${service}/s` : `${arrival}/${service}/1`;
+  if (servers > 1) {
+    return `${arrival}/${service}/s`;
+  }
+
+  return `${arrival}/${service}/1`;
 }
 
 function resolveManualModel(selectedModel: string, servers: number): string {
@@ -63,9 +62,8 @@ function resolveManualModel(selectedModel: string, servers: number): string {
   return selectedModel;
 }
 
-export default function Home() {
+export default function QueueingModelsPage() {
   const [activeTab, setActiveTab] = useState<AppTab>("models");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mode, setMode] = useState<"manual" | "auto">("manual");
   const [manualServerMode, setManualServerMode] = useState<"single" | "multi">(
     "single",
@@ -100,6 +98,7 @@ export default function Home() {
   const [serviceGammaTheta, setServiceGammaTheta] = useState("");
   const [serviceGammaK, setServiceGammaK] = useState("");
   const [servers, setServers] = useState(1);
+  // G/G/1 arrival spread state
   const [arrivalInputMode, setArrivalInputMode] = useState<
     "meanSpread" | "minMax" | "thetaK"
   >("meanSpread");
@@ -111,6 +110,7 @@ export default function Home() {
   const [arrivalMaxTime, setArrivalMaxTime] = useState("");
   const [arrivalGammaTheta, setArrivalGammaTheta] = useState("");
   const [arrivalGammaK, setArrivalGammaK] = useState("");
+  // G/G/1 service spread state (replaces ca/cs direct entry)
   const [ggServiceInputMode, setGgServiceInputMode] = useState<
     "meanSpread" | "minMax" | "thetaK"
   >("meanSpread");
@@ -123,27 +123,18 @@ export default function Home() {
   const [resultTimeUnit, setResultTimeUnit] = useState<TimeUnit>("minutes");
   const [results, setResults] = useState<SimulationResults | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleModeChange = (nextMode: "manual" | "auto") => {
     setMode(nextMode);
-    if (
-      nextMode === "auto" &&
-      arrivalProcessType === "interArrival" &&
-      arrivalDistribution !== "Exponential" &&
-      serviceDistribution === "Exponential"
-    ) {
+    if (nextMode === "auto" && arrivalProcessType === "interArrival" && arrivalDistribution !== "Exponential" && serviceDistribution === "Exponential") {
       setServiceDistribution("Uniform");
     }
   };
 
   const handleArrivalDistributionChange = (value: string) => {
     setArrivalDistribution(value);
-    if (
-      mode === "auto" &&
-      arrivalProcessType === "interArrival" &&
-      value !== "Exponential" &&
-      serviceDistribution === "Exponential"
-    ) {
+    if (mode === "auto" && arrivalProcessType === "interArrival" && value !== "Exponential" && serviceDistribution === "Exponential") {
       setServiceDistribution("Uniform");
     }
   };
@@ -200,12 +191,11 @@ export default function Home() {
       return;
     }
 
-    const getEffMode = (distribution: string, currentMode: string) => {
+    const getEffMode = (dist: string, currentMode: string) => {
       if (mode === "manual") return currentMode;
-      if (distribution === "Uniform") return "minMax";
-      if (distribution === "Normal") return "meanSpread";
-      if (distribution === "Gamma")
-        return currentMode === "thetaK" ? "thetaK" : "meanSpread";
+      if (dist === "Uniform") return "minMax";
+      if (dist === "Normal") return "meanSpread";
+      if (dist === "Gamma") return currentMode === "thetaK" ? "thetaK" : "meanSpread";
       return currentMode;
     };
 
@@ -254,6 +244,8 @@ export default function Home() {
       return;
     }
 
+
+
     if (!effectiveModel.startsWith("G/G/")) {
       if (effectiveModel.startsWith("M/G/") && effMgSvcMode === "minMax") {
         if (
@@ -264,7 +256,9 @@ export default function Home() {
           parsedServiceMin <= 0 ||
           parsedServiceMax <= 0
         ) {
-          toast.error("Please provide valid positive min and max service times.");
+          toast.error(
+            "Please provide valid positive min and max service times.",
+          );
           return;
         }
 
@@ -281,7 +275,7 @@ export default function Home() {
             !parsedServiceRate ||
             parsedServiceRate <= 0
           ) {
-            toast.error("Please provide a valid positive service rate.");
+            toast.error("Please provide a valid positive service rate (μ).");
             return;
           }
         } else {
@@ -321,7 +315,6 @@ export default function Home() {
           return;
         }
       }
-
       if (effSvcMode === "minMax") {
         if (
           !ggServiceMinTime ||
@@ -352,18 +345,15 @@ export default function Home() {
       const parsedArrivalTheta = parseFloat(arrivalGammaTheta);
       const parsedArrivalK = parseFloat(arrivalGammaK);
 
+      // When rate (μ) is entered directly, convert to service time in minutes: 1 / (rate per minute)
       const normalizedServiceTime =
         serviceInputType === "rate" && parsedServiceRate
           ? 1 / convertRateToPerMinute(parsedServiceRate, serviceRateUnit)
           : effMgSvcMode === "meanSpread" && parsedServiceTime
             ? convertDurationToMinutes(parsedServiceTime, serviceTimeUnit)
             : effMgSvcMode === "thetaK" && parsedServiceK && parsedServiceTheta
-              ? convertDurationToMinutes(
-                  parsedServiceK * parsedServiceTheta,
-                  serviceTimeUnit,
-                )
+              ? convertDurationToMinutes(parsedServiceK * parsedServiceTheta, serviceTimeUnit)
               : undefined;
-
       const normalizedServiceMin =
         effMgSvcMode === "minMax" && parsedServiceMin
           ? convertDurationToMinutes(parsedServiceMin, serviceTimeUnit)
@@ -372,30 +362,26 @@ export default function Home() {
         effMgSvcMode === "minMax" && parsedServiceMax
           ? convertDurationToMinutes(parsedServiceMax, serviceTimeUnit)
           : undefined;
-
       const spreadValue =
-        effectiveModel.startsWith("M/G/") &&
-        effMgSvcMode === "meanSpread" &&
-        serviceSpreadValue
+        effectiveModel.startsWith("M/G/") && effMgSvcMode === "meanSpread" && serviceSpreadValue
           ? parseFloat(serviceSpreadValue)
           : undefined;
-
       const normalizedVariance =
         effMgSvcMode === "thetaK" && parsedServiceK && parsedServiceTheta
           ? parsedServiceK * Math.pow(parsedServiceTheta * minutesPerUnit[serviceTimeUnit], 2)
           : spreadValue !== undefined && serviceSpreadType === "variance"
             ? spreadValue * Math.pow(minutesPerUnit[serviceTimeUnit], 2)
             : undefined;
-
       const normalizedStdDev =
         spreadValue !== undefined && serviceSpreadType === "stdDev"
           ? spreadValue * minutesPerUnit[serviceTimeUnit]
           : undefined;
 
+      // Compute Ca² and Cs² for G/G/1 from spread inputs
       let computedCa: number | undefined;
       let computedCs: number | undefined;
-
       if (effectiveModel.startsWith("G/G/")) {
+        // Arrival Ca²
         if (effArrMode === "minMax") {
           const aMin = convertDurationToMinutes(
             parseFloat(arrivalMinTime),
@@ -419,14 +405,17 @@ export default function Home() {
                   parseFloat(arrivalValue),
                   arrivalTimeUnit,
                 )
-              : convertDurationToMinutes(parseFloat(arrivalValue), arrivalTimeUnit);
+              : convertDurationToMinutes(
+                  parseFloat(arrivalValue),
+                  arrivalTimeUnit,
+                );
           const aVar =
             arrivalSpreadType === "variance"
               ? arrSpreadVal * Math.pow(minutesPerUnit[arrivalTimeUnit], 2)
               : Math.pow(arrSpreadVal * minutesPerUnit[arrivalTimeUnit], 2);
           computedCa = aVar / Math.pow(aMean, 2);
         }
-
+        // Service Cs²
         if (effSvcMode === "minMax") {
           const sMin = convertDurationToMinutes(
             parseFloat(ggServiceMinTime),
@@ -450,7 +439,10 @@ export default function Home() {
                   parseFloat(serviceRateValue),
                   serviceRateUnit,
                 )
-              : convertDurationToMinutes(parseFloat(serviceTime), serviceTimeUnit);
+              : convertDurationToMinutes(
+                  parseFloat(serviceTime),
+                  serviceTimeUnit,
+                );
           const sVar =
             ggServiceSpreadType === "variance"
               ? svcSpreadVal * Math.pow(minutesPerUnit[serviceTimeUnit], 2)
@@ -478,9 +470,7 @@ export default function Home() {
         arrivalDistribution: mode === "auto" ? arrivalDistribution : undefined,
         serviceDistribution: mode === "auto" ? serviceDistribution : undefined,
         serviceTime:
-          effMgSvcMode === "meanSpread" || effMgSvcMode === "thetaK"
-            ? normalizedServiceTime
-            : undefined,
+          (effMgSvcMode === "meanSpread" || effMgSvcMode === "thetaK") ? normalizedServiceTime : undefined,
         serviceMinTime:
           effMgSvcMode === "minMax" ? normalizedServiceMin : undefined,
         serviceMaxTime:
@@ -512,12 +502,7 @@ export default function Home() {
           arrivalTimeUnit,
         );
         payload.meanInterArrivalTime = (aMin + aMax) / 2.0;
-      } else if (
-        effectiveModel.startsWith("G/G/") &&
-        effArrMode === "thetaK" &&
-        parsedArrivalK &&
-        parsedArrivalTheta
-      ) {
+      } else if (effectiveModel.startsWith("G/G/") && effArrMode === "thetaK" && parsedArrivalK && parsedArrivalTheta) {
         payload.meanInterArrivalTime = convertDurationToMinutes(
           parsedArrivalK * parsedArrivalTheta,
           arrivalTimeUnit,
@@ -544,19 +529,14 @@ export default function Home() {
           serviceTimeUnit,
         );
         payload.serviceTime = (sMin + sMax) / 2.0;
-      } else if (
-        effectiveModel.startsWith("G/G/") &&
-        effSvcMode === "thetaK" &&
-        parsedServiceK &&
-        parsedServiceTheta
-      ) {
+      } else if (effectiveModel.startsWith("G/G/") && effSvcMode === "thetaK" && parsedServiceK && parsedServiceTheta) {
         payload.serviceTime = convertDurationToMinutes(
           parsedServiceK * parsedServiceTheta,
           serviceTimeUnit,
         );
       }
 
-      const response = await fetch(`${apiUrl}/api/simulation/calculate`, {
+      const response = await fetch(`${apiUrl}/api/queue/calculate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -566,7 +546,7 @@ export default function Home() {
 
       if (!response.ok) {
         const error = await response.json();
-        toast.error(error.error || "Calculation failed");
+        toast.error(error.error || "Simulation failed");
         setIsLoading(false);
         return;
       }
@@ -586,162 +566,163 @@ export default function Home() {
 
       setResults(apiResults);
       setIsLoading(false);
-      toast.success("Calculation complete.");
+      toast.success("Simulation completed successfully!");
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to connect to the API.");
+      toast.error(
+        "API Connection failed. Please ensure the backend is running and accessible.",
+      );
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen lg:pl-72">
+    <div className="flex h-screen bg-slate-50 dark:bg-slate-950">
       <Toaster position="top-right" />
+
+      {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          setSidebarOpen(false);
-        }}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        onTabChange={setActiveTab}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="workspace-shell mx-auto min-h-screen max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-        <header className="mb-6 flex items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] shadow-sm lg:hidden"
-            aria-label="Open sidebar"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <h1 className="hero-title text-4xl sm:text-5xl">Signal Room</h1>
-          </div>
-          <ThemeToggle />
-        </header>
+      {/* Main Content */}
+      <div className="flex-1 lg:ml-72 overflow-auto">
+        {/* Header */}
+        <header className="sticky top-0 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8 py-4 shadow-sm transition-colors">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 
+                         hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                aria-label="Toggle menu"
+              >
+                {isSidebarOpen ? (
+                  <X className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                ) : (
+                  <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                )}
+              </button>
 
-        {activeTab === "models" ? (
-          <section className="space-y-6">
-            <div className="section-shell">
-              <div className="section-header">
-                <div>
-                  <p className="eyebrow">Input deck</p>
-                  <h2 className="section-title">Parameter Studio</h2>
-                </div>
-                <SlidersHorizontal className="h-5 w-5 text-[var(--accent)]" />
-              </div>
-
-              <InputForm
-                mode={mode}
-                onModeChange={handleModeChange}
-                manualServerMode={manualServerMode}
-                onManualServerModeChange={handleManualServerModeChange}
-                selectedModel={selectedModel}
-                onSelectedModelChange={setSelectedModel}
-                arrivalProcessType={arrivalProcessType}
-                onArrivalProcessTypeChange={handleArrivalProcessTypeChange}
-                arrivalDistribution={arrivalDistribution}
-                serviceDistribution={serviceDistribution}
-                onArrivalDistributionChange={handleArrivalDistributionChange}
-                onServiceDistributionChange={setServiceDistribution}
-                servers={servers}
-                onServersChange={setServers}
-                arrivalInputType={arrivalInputType}
-                onArrivalInputTypeChange={setArrivalInputType}
-                arrivalTimeUnit={arrivalTimeUnit}
-                onArrivalTimeUnitChange={setArrivalTimeUnit}
-                arrivalValue={arrivalValue}
-                onArrivalValueChange={setArrivalValue}
-                serviceInputType={serviceInputType}
-                onServiceInputTypeChange={setServiceInputType}
-                serviceRateValue={serviceRateValue}
-                onServiceRateValueChange={setServiceRateValue}
-                serviceRateUnit={serviceRateUnit}
-                onServiceRateUnitChange={setServiceRateUnit}
-                serviceTimeUnit={serviceTimeUnit}
-                onServiceTimeUnitChange={setServiceTimeUnit}
-                serviceTime={serviceTime}
-                onServiceTimeChange={setServiceTime}
-                serviceInputMode={serviceInputMode}
-                onServiceInputModeChange={setServiceInputMode}
-                serviceSpreadType={serviceSpreadType}
-                onServiceSpreadTypeChange={setServiceSpreadType}
-                serviceSpreadValue={serviceSpreadValue}
-                onServiceSpreadValueChange={setServiceSpreadValue}
-                serviceMinTime={serviceMinTime}
-                onServiceMinTimeChange={setServiceMinTime}
-                serviceMaxTime={serviceMaxTime}
-                onServiceMaxTimeChange={setServiceMaxTime}
-                serviceGammaTheta={serviceGammaTheta}
-                onServiceGammaThetaChange={setServiceGammaTheta}
-                serviceGammaK={serviceGammaK}
-                onServiceGammaKChange={setServiceGammaK}
-                arrivalInputMode={arrivalInputMode}
-                onArrivalInputModeChange={setArrivalInputMode}
-                arrivalSpreadType={arrivalSpreadType}
-                onArrivalSpreadTypeChange={setArrivalSpreadType}
-                arrivalSpreadValue={arrivalSpreadValue}
-                onArrivalSpreadValueChange={setArrivalSpreadValue}
-                arrivalMinTime={arrivalMinTime}
-                onArrivalMinTimeChange={setArrivalMinTime}
-                arrivalMaxTime={arrivalMaxTime}
-                onArrivalMaxTimeChange={setArrivalMaxTime}
-                arrivalGammaTheta={arrivalGammaTheta}
-                onArrivalGammaThetaChange={setArrivalGammaTheta}
-                arrivalGammaK={arrivalGammaK}
-                onArrivalGammaKChange={setArrivalGammaK}
-                ggServiceInputMode={ggServiceInputMode}
-                onGgServiceInputModeChange={setGgServiceInputMode}
-                ggServiceSpreadType={ggServiceSpreadType}
-                onGgServiceSpreadTypeChange={setGgServiceSpreadType}
-                ggServiceSpreadValue={ggServiceSpreadValue}
-                onGgServiceSpreadValueChange={setGgServiceSpreadValue}
-                ggServiceMinTime={ggServiceMinTime}
-                onGgServiceMinTimeChange={setGgServiceMinTime}
-                ggServiceMaxTime={ggServiceMaxTime}
-                onGgServiceMaxTimeChange={setGgServiceMaxTime}
-                resultTimeUnit={resultTimeUnit}
-                onResultTimeUnitChange={setResultTimeUnit}
-                effectiveModel={effectiveModel}
-                onSubmit={runSimulation}
-                isLoading={isLoading}
-              />
-            </div>
-
-            {results ? (
-              <ResultsPanel results={results} />
-            ) : (
-              <div className="section-shell">
-                <div className="section-header">
-                  <div>
-                    <p className="eyebrow">Output bay</p>
-                    <h2 className="section-title">Waiting for numbers</h2>
-                  </div>
-                  <BarChart3 className="h-5 w-5 text-[var(--accent-alt)]" />
-                </div>
-                <p className="section-copy mt-4">
-                  Submit the form to render the queueing metrics here.
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                  Queueing Models
+                </h1>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Clean configuration and live results for queueing analysis.
                 </p>
               </div>
-            )}
-          </section>
-        ) : (
-          <section className="section-shell">
-            <div className="section-header">
-              <div>
-                <p className="eyebrow">Simulator</p>
-                <h2 className="section-title">Removed from backend</h2>
-              </div>
-              <Activity className="h-5 w-5 text-[var(--accent-alt)]" />
             </div>
-            <p className="section-copy mt-4">
-              The simulator area is kept in the sidebar for navigation, but the backend now only supports queueing model calculations.
-            </p>
-          </section>
-        )}
+            <ThemeToggle />
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl space-y-6 pb-12">
+            <div className="rounded-[2rem] border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-6 sm:p-8">
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-500">
+                  Queueing Models
+                </p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                  Queueing Models
+                </h2>
+                <p className="max-w-2xl text-sm sm:text-base text-slate-500 dark:text-slate-400">
+                  Simple queue analysis dashboard.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+              <div className="space-y-6">
+                <InputForm
+                  mode={mode}
+                  onModeChange={handleModeChange}
+                  manualServerMode={manualServerMode}
+                  onManualServerModeChange={handleManualServerModeChange}
+                  selectedModel={selectedModel}
+                  onSelectedModelChange={setSelectedModel}
+                  arrivalProcessType={arrivalProcessType}
+                  onArrivalProcessTypeChange={handleArrivalProcessTypeChange}
+                  arrivalDistribution={arrivalDistribution}
+                  serviceDistribution={serviceDistribution}
+                  onArrivalDistributionChange={handleArrivalDistributionChange}
+                  onServiceDistributionChange={setServiceDistribution}
+                  servers={servers}
+                  onServersChange={setServers}
+                  arrivalInputType={arrivalInputType}
+                  onArrivalInputTypeChange={setArrivalInputType}
+                  arrivalTimeUnit={arrivalTimeUnit}
+                  onArrivalTimeUnitChange={setArrivalTimeUnit}
+                  arrivalValue={arrivalValue}
+                  onArrivalValueChange={setArrivalValue}
+                  serviceInputType={serviceInputType}
+                  onServiceInputTypeChange={setServiceInputType}
+                  serviceRateValue={serviceRateValue}
+                  onServiceRateValueChange={setServiceRateValue}
+                  serviceRateUnit={serviceRateUnit}
+                  onServiceRateUnitChange={setServiceRateUnit}
+                  serviceTimeUnit={serviceTimeUnit}
+                  onServiceTimeUnitChange={setServiceTimeUnit}
+                  serviceTime={serviceTime}
+                  onServiceTimeChange={setServiceTime}
+                  serviceInputMode={serviceInputMode}
+                  onServiceInputModeChange={setServiceInputMode}
+                  serviceSpreadType={serviceSpreadType}
+                  onServiceSpreadTypeChange={setServiceSpreadType}
+                  serviceSpreadValue={serviceSpreadValue}
+                  onServiceSpreadValueChange={setServiceSpreadValue}
+                  serviceMinTime={serviceMinTime}
+                  onServiceMinTimeChange={setServiceMinTime}
+                  serviceMaxTime={serviceMaxTime}
+                  onServiceMaxTimeChange={setServiceMaxTime}
+                  serviceGammaTheta={serviceGammaTheta}
+                  onServiceGammaThetaChange={setServiceGammaTheta}
+                  serviceGammaK={serviceGammaK}
+                  onServiceGammaKChange={setServiceGammaK}
+                  arrivalInputMode={arrivalInputMode}
+                  onArrivalInputModeChange={setArrivalInputMode}
+                  arrivalSpreadType={arrivalSpreadType}
+                  onArrivalSpreadTypeChange={setArrivalSpreadType}
+                  arrivalSpreadValue={arrivalSpreadValue}
+                  onArrivalSpreadValueChange={setArrivalSpreadValue}
+                  arrivalMinTime={arrivalMinTime}
+                  onArrivalMinTimeChange={setArrivalMinTime}
+                  arrivalMaxTime={arrivalMaxTime}
+                  onArrivalMaxTimeChange={setArrivalMaxTime}
+                  arrivalGammaTheta={arrivalGammaTheta}
+                  onArrivalGammaThetaChange={setArrivalGammaTheta}
+                  arrivalGammaK={arrivalGammaK}
+                  onArrivalGammaKChange={setArrivalGammaK}
+                  ggServiceInputMode={ggServiceInputMode}
+                  onGgServiceInputModeChange={setGgServiceInputMode}
+                  ggServiceSpreadType={ggServiceSpreadType}
+                  onGgServiceSpreadTypeChange={setGgServiceSpreadType}
+                  ggServiceSpreadValue={ggServiceSpreadValue}
+                  onGgServiceSpreadValueChange={setGgServiceSpreadValue}
+                  ggServiceMinTime={ggServiceMinTime}
+                  onGgServiceMinTimeChange={setGgServiceMinTime}
+                  ggServiceMaxTime={ggServiceMaxTime}
+                  onGgServiceMaxTimeChange={setGgServiceMaxTime}
+                  resultTimeUnit={resultTimeUnit}
+                  onResultTimeUnitChange={setResultTimeUnit}
+                  effectiveModel={effectiveModel}
+                  onSubmit={runSimulation}
+                  isLoading={isLoading}
+                />
+              </div>
+
+              <div className="space-y-6">
+                <ResultsPanel results={results} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

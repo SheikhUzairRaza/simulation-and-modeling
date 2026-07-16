@@ -5,9 +5,6 @@ namespace QueueSimulatorAPI.Models;
 public class QueueSimulationRequest : IValidatableObject
 {
     public string? Model { get; set; }
-    public bool AutoDetectModel { get; set; }
-    public string? ArrivalDistribution { get; set; }
-    public string? ServiceDistribution { get; set; }
 
     [Range(0.0000001, double.MaxValue, ErrorMessage = "Arrival Rate must be greater than 0")]
     public double? ArrivalRate { get; set; }
@@ -93,26 +90,10 @@ public class QueueSimulationRequest : IValidatableObject
                 [nameof(Variance), nameof(ServiceStdDev)]);
         }
 
-        if (AutoDetectModel)
-        {
-            if (string.IsNullOrWhiteSpace(ArrivalDistribution))
-            {
-                yield return new ValidationResult(
-                    "ArrivalDistribution is required when AutoDetectModel is true.",
-                    [nameof(ArrivalDistribution)]);
-            }
-
-            if (string.IsNullOrWhiteSpace(ServiceDistribution))
-            {
-                yield return new ValidationResult(
-                    "ServiceDistribution is required when AutoDetectModel is true.",
-                    [nameof(ServiceDistribution)]);
-            }
-        }
-        else if (string.IsNullOrWhiteSpace(Model))
+        if (string.IsNullOrWhiteSpace(Model))
         {
             yield return new ValidationResult(
-                "Model is required in manual mode.",
+                "Model is required.",
                 [nameof(Model)]);
         }
     }
